@@ -17,3 +17,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "test-case-kotlin"
+
