@@ -144,7 +144,7 @@ Recommended tools:
 
 ```kotlin
 dependencies {
-    implementation("io.github.kotlinmania:test-case-kotlin:0.1.0-SNAPSHOT")
+    implementation("io.github.kotlinmania:test-case-kotlin:0.1.0")
 }
 ```
 
