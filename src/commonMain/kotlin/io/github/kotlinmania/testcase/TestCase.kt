@@ -12,12 +12,28 @@ package io.github.kotlinmania.testcase
 public data class TestCase<out A>(
     public val arguments: A,
     public val name: String? = null,
-)
+    public val ignored: Boolean = false,
+    public val expectedPanic: String? = null,
+) {
+    public val shouldRun: Boolean
+        get() = !ignored
+
+    public fun run(block: (A) -> Unit) {
+        if (shouldRun) {
+            block(arguments)
+        }
+    }
+}
 
 /**
  * Creates a parameterized test instance.
  *
  * Equivalent to the upstream `test_case` export.
  */
-public fun <A> testCase(arguments: A, name: String? = null): TestCase<A> =
-    TestCase(arguments, name)
+public fun <A> testCase(
+    arguments: A,
+    name: String? = null,
+    ignored: Boolean = false,
+    expectedPanic: String? = null,
+): TestCase<A> =
+    TestCase(arguments, name, ignored, expectedPanic)

@@ -35,4 +35,14 @@ public class TestMatrixTest {
             assertEquals("constant", label)
         }
     }
+
+    @Test
+    public fun matricesCompilationErrors() {
+        val emptyAxis = testMatrix(
+            listOf(1, 2),
+            emptyList<Int>(),
+        )
+
+        assertEquals(0, emptyAxis.size)
+    }
 }
