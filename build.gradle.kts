@@ -407,6 +407,125 @@ mavenPublishing {
     }
 }
 
+// ---------------------------------------------------------------------------
+// CodeQL Java/Kotlin extraction task
+//
+// .github/workflows/codeql.yml invokes `./gradlew codeqlCompileJvm` to feed
+// kotlinc-compiled commonMain through the CodeQL Java agent.
+val codeqlKotlinc: Configuration by configurations.creating {
+    description = "Kotlin compiler (CodeQL extraction target only - not published)"
+    isCanBeResolved = true
+    isCanBeConsumed = false
+}
+
+val codeqlSourceClasspath: Configuration by configurations.creating {
+    description = "Runtime classpath for CodeQL extraction of commonMain sources"
+    isCanBeResolved = true
+    isCanBeConsumed = false
+}
+
+dependencies {
+    codeqlKotlinc("org.jetbrains.kotlin:kotlin-compiler-embeddable:2.3.21")
+    codeqlSourceClasspath("org.jetbrains.kotlin:kotlin-stdlib:2.3.21")
+    codeqlSourceClasspath("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.11.0")
+    codeqlSourceClasspath("org.jetbrains.kotlinx:kotlinx-serialization-core:1.11.0")
+    codeqlSourceClasspath("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
+    codeqlSourceClasspath("org.jetbrains.kotlinx:kotlinx-datetime:0.8.0")
+    codeqlSourceClasspath("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.4.0")
+}
+
+val codeqlCommonMainSourceDir = layout.projectDirectory.dir("src/commonMain/kotlin")
+val codeqlSanitizedSourceDir = layout.buildDirectory.dir("generated/codeql-commonMain-src")
+
+val prepareCodeqlCommonMainSources = tasks.register("prepareCodeqlCommonMainSources") {
+    description =
+        "Copies commonMain sources for CodeQL, removing Swift Export annotations unsupported by plain JVM kotlinc."
+    group = "verification"
+
+    inputs.dir(codeqlCommonMainSourceDir).withPathSensitivity(PathSensitivity.RELATIVE)
+    outputs.dir(codeqlSanitizedSourceDir)
+
+    doLast {
+        val sourceRoot = codeqlCommonMainSourceDir.asFile
+        val targetRoot = codeqlSanitizedSourceDir.get().asFile
+        targetRoot.deleteRecursively()
+        targetRoot.mkdirs()
+
+        fileTree(sourceRoot) { include("**/*") }.files.forEach { source ->
+            val target = targetRoot.resolve(source.relativeTo(sourceRoot).path)
+            target.parentFile.mkdirs()
+            if (source.extension == "kt") {
+                val sanitized = source.readLines()
+                    .filterNot { line ->
+                        val trimmed = line.trim()
+                        trimmed == "@file:OptIn(kotlin.experimental.ExperimentalObjCRefinement::class)" ||
+                            trimmed == "import kotlin.native.HiddenFromObjC" ||
+                            trimmed == "@HiddenFromObjC"
+                    }
+                    .joinToString(System.lineSeparator())
+                target.writeText(sanitized + System.lineSeparator())
+            } else {
+                source.copyTo(target, overwrite = true)
+            }
+        }
+    }
+}
+
+val codeqlCompileJvm = tasks.register<JavaExec>("codeqlCompileJvm") {
+    description =
+        "Compile commonMain Kotlin sources with kotlinc 2.3.21 for CodeQL Java/Kotlin extraction."
+    group = "verification"
+
+    dependsOn(prepareCodeqlCommonMainSources)
+    classpath(codeqlKotlinc)
+    mainClass.set("org.jetbrains.kotlin.cli.jvm.K2JVMCompiler")
+
+    val outDir = layout.buildDirectory.dir("classes/kotlin/codeql-jvm")
+    val sentinelDir = layout.buildDirectory.dir("generated/codeql-empty-source")
+    inputs.dir(codeqlCommonMainSourceDir).withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.files(codeqlSourceClasspath).withNormalizer(ClasspathNormalizer::class.java)
+    outputs.dir(outDir)
+    outputs.dir(sentinelDir)
+
+    doFirst {
+        outDir.get().asFile.mkdirs()
+        val fullClasspath =
+            codeqlSourceClasspath.resolve()
+                .joinToString(File.pathSeparator) { it.absolutePath }
+        val sourceFiles = fileTree(codeqlSanitizedSourceDir.get().asFile) { include("**/*.kt") }
+            .files
+            .toMutableList()
+        if (sourceFiles.isEmpty()) {
+            val sentinelFile = sentinelDir.get().asFile.resolve("io/github/kotlinmania/testcase/CodeqlEmptySentinel.kt")
+            sentinelFile.parentFile.mkdirs()
+            sentinelFile.writeText(
+                """
+                // Auto-generated. Present so codeqlCompileJvm has at least
+                // one Kotlin source to feed kotlinc; replaced by real
+                // commonMain content once porting begins.
+                package io.github.kotlinmania.testcase
+
+                private object CodeqlEmptySentinel
+                """.trimIndent(),
+            )
+            sourceFiles += sentinelFile
+        }
+        args = listOf(
+            "-d", outDir.get().asFile.absolutePath,
+            "-classpath", fullClasspath,
+            "-jvm-target", "21",
+            "-no-stdlib",
+            "-no-reflect",
+            "-language-version", "2.3",
+            "-api-version", "2.3",
+            "-Xexpect-actual-classes",
+            "-opt-in", "kotlin.time.ExperimentalTime",
+            "-opt-in", "kotlin.concurrent.atomics.ExperimentalAtomicApi",
+            "-opt-in", "kotlin.ExperimentalUnsignedTypes",
+        ) + sourceFiles.map { it.absolutePath }
+    }
+}
+
 tasks.register("setupAndroidSdk") {
     group = "setup"
     description = "Downloads and configures the project-local Android SDK."
