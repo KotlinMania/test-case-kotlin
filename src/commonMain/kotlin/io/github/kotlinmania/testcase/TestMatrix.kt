@@ -1,10 +1,10 @@
-// port-lint: source src/lib.rs
+// port-lint: source lib.rs
 package io.github.kotlinmania.testcase
 
 /**
  * Generates test cases from the Cartesian product of argument values.
  *
- * Equivalent to the upstream `test_matrix` export.
+ * Equivalent to the upstream testMatrix export.
  */
 public fun <A> testMatrix(first: Iterable<A>): List<TestCase<A>> =
     first.map { a -> testCase(a) }

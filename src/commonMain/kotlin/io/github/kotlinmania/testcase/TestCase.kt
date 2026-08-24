@@ -1,10 +1,10 @@
-// port-lint: source src/lib.rs
+// port-lint: source lib.rs
 package io.github.kotlinmania.testcase
 
 /**
  * Provides a parameterized test instance.
  *
- * The upstream `test_case` attribute macro generates a named test from a
+ * The upstream testCase attribute macro generates a named test from a
  * function plus one argument set. Kotlin has no common compile-time
  * attribute-macro facility, so the port exposes the same unit of data as a
  * value that a translated test can enumerate explicitly.
@@ -28,7 +28,7 @@ public data class TestCase<out A>(
 /**
  * Creates a parameterized test instance.
  *
- * Equivalent to the upstream `test_case` export.
+ * Equivalent to the upstream testCase export.
  */
 public fun <A> testCase(
     arguments: A,

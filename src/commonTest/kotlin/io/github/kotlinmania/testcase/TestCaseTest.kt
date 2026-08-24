@@ -1,4 +1,4 @@
-// port-lint: source tests/acceptance_tests.rs
+// port-lint: tests tests/acceptance_tests.rs
 package io.github.kotlinmania.testcase
 
 import kotlin.math.abs
@@ -12,10 +12,11 @@ import kotlin.test.assertTrue
 public class TestCaseTest {
     @Test
     public fun casesCanBeDeclaredOnAsyncMethods() {
-        val cases = listOf(
-            testCase(2 to 4, "async positive"),
-            testCase(-2 to -4, "async negative"),
-        )
+        val cases =
+            listOf(
+                testCase(2 to 4, "async positive"),
+                testCase(-2 to -4, "async negative"),
+            )
 
         for (testCase in cases) {
             testCase.run { (x, y) ->
@@ -58,21 +59,23 @@ public class TestCaseTest {
     public fun casesCanPanic() {
         val panicking = testCase("boom", expectedPanic = "boom")
 
-        val failure = assertFailsWith<IllegalStateException> {
-            panicking.run { message ->
-                throw IllegalStateException(message)
+        val failure =
+            assertFailsWith<IllegalStateException> {
+                panicking.run { message ->
+                    throw IllegalStateException(message)
+                }
             }
-        }
 
         assertEquals(panicking.expectedPanic, failure.message)
     }
 
     @Test
     public fun casesCanReturnResult() {
-        val cases = listOf(
-            testCase(Result.success(8), "success"),
-            testCase(Result.failure<Int>(IllegalArgumentException("bad input")), "failure"),
-        )
+        val cases =
+            listOf(
+                testCase(Result.success(8), "success"),
+                testCase(Result.failure<Int>(IllegalArgumentException("bad input")), "failure"),
+            )
 
         assertEquals(8, cases[0].arguments.getOrThrow())
         assertFailsWith<IllegalArgumentException> {
@@ -82,11 +85,12 @@ public class TestCaseTest {
 
     @Test
     public fun casesSupportBasicFeatures() {
-        val cases = listOf(
-            testCase(-2 to -4, "when both operands are negative"),
-            testCase(2 to 4, "when both operands are positive"),
-            testCase(4 to 2, "when operands are swapped"),
-        )
+        val cases =
+            listOf(
+                testCase(-2 to -4, "when both operands are negative"),
+                testCase(2 to 4, "when both operands are positive"),
+                testCase(4 to 2, "when operands are swapped"),
+            )
 
         for (testCase in cases) {
             testCase.run { (x, y) ->
@@ -99,10 +103,11 @@ public class TestCaseTest {
 
     @Test
     public fun casesSupportComplexAssertions() {
-        val cases = listOf(
-            testCase(listOf(1, 2, 3), "ordered values"),
-            testCase(listOf(3, 2, 1), "reverse values"),
-        )
+        val cases =
+            listOf(
+                testCase(listOf(1, 2, 3), "ordered values"),
+                testCase(listOf(3, 2, 1), "reverse values"),
+            )
 
         for (testCase in cases) {
             testCase.run { values ->
@@ -132,11 +137,12 @@ public class TestCaseTest {
 
     @Test
     public fun casesSupportKeywordWith() {
-        val withNamedArguments = testCase(
-            arguments = 4 to 2,
-            name = "with",
-            ignored = false,
-        )
+        val withNamedArguments =
+            testCase(
+                arguments = 4 to 2,
+                name = "with",
+                ignored = false,
+            )
 
         withNamedArguments.run { (x, y) ->
             assertEquals(8, abs(x * y))
@@ -157,27 +163,30 @@ public class TestCaseTest {
 
     @Test
     public fun casesSupportPatternMatching() {
-        val cases = listOf(
-            testCase(Shape.Circle(2), "circle"),
-            testCase(Shape.Rectangle(2, 4), "rectangle"),
-        )
+        val cases =
+            listOf(
+                testCase(Shape.Circle(2), "circle"),
+                testCase(Shape.Rectangle(2, 4), "rectangle"),
+            )
 
-        val areas = cases.map { testCase ->
-            when (val shape = testCase.arguments) {
-                is Shape.Circle -> shape.radius * shape.radius
-                is Shape.Rectangle -> shape.width * shape.height
+        val areas =
+            cases.map { testCase ->
+                when (val shape = testCase.arguments) {
+                    is Shape.Circle -> shape.radius * shape.radius
+                    is Shape.Rectangle -> shape.width * shape.height
+                }
             }
-        }
 
         assertEquals(listOf(4, 8), areas)
     }
 
     @Test
     public fun casesCanUseRegex() {
-        val cases = listOf(
-            testCase("test casesSupportBasicFeatures ... ok"),
-            testCase("test matricesSupportBasicFeatures ... ok"),
-        )
+        val cases =
+            listOf(
+                testCase("test casesSupportBasicFeatures ... ok"),
+                testCase("test matricesSupportBasicFeatures ... ok"),
+            )
         val testOutputLine = Regex("""test \w+ \.\.\. ok""")
 
         for (testCase in cases) {
@@ -189,11 +198,12 @@ public class TestCaseTest {
     public fun featuresProduceHumanReadableErrors() {
         val panicking = testCase("case failed", name = "human readable", expectedPanic = "case failed")
 
-        val failure = assertFailsWith<IllegalStateException> {
-            panicking.run { message ->
-                throw IllegalStateException(message)
+        val failure =
+            assertFailsWith<IllegalStateException> {
+                panicking.run { message ->
+                    throw IllegalStateException(message)
+                }
             }
-        }
 
         assertEquals("case failed", failure.message)
     }
@@ -229,10 +239,19 @@ public class TestCaseTest {
     private fun <T> firstValue(values: List<T>): T =
         values.first()
 
-    private data class AllowedInvocation(val marker: String, val value: Int)
+    private data class AllowedInvocation(
+        val marker: String,
+        val value: Int,
+    )
 
     private sealed class Shape {
-        data class Circle(val radius: Int) : Shape()
-        data class Rectangle(val width: Int, val height: Int) : Shape()
+        data class Circle(
+            val radius: Int,
+        ) : Shape()
+
+        data class Rectangle(
+            val width: Int,
+            val height: Int,
+        ) : Shape()
     }
 }
