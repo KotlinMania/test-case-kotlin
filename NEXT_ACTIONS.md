@@ -4,10 +4,10 @@ Based on AST analysis, here are the concrete next steps.
 
 ## Summary
 
-- **Files Present:** 1/1 (100.0%)
-- **Function parity:** 0/0 matched (target 6) — N/A
+- **Files Present:** 1/2 (50.0%)
+- **Function parity:** 0/20 matched (target 6) — 0.0%
 - **Class/type parity:** 0/0 matched (target 1) — N/A
-- **Combined symbol parity:** 0/0 matched (target 7) — N/A
+- **Combined symbol parity:** 0/20 matched (target 7) — 0.0%
 - **Average inline-code cosine:** 0.00 (function body across 1 matched files)
 - **Average documentation cosine:** 0.29 (doc text across 1 matched files)
 - **Cheat-zeroed Files:** 1
@@ -29,7 +29,7 @@ Every matched file is listed below with function and type symbol parity.
 
 ### 1. lib
 
-- **Target:** `testcase.Case [ZERO]`
+- **Target:** `testcase.Case [ZERO] [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.00
 - **Dependents:** 0
 - **Priority Score:** 10.0
@@ -37,6 +37,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 0/0 matched (target 1)
 - **Missing types:** _none_
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `lib.rs` vs expected `lib.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `lib.rs` vs expected `lib.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `lib.rs` vs expected `lib.rs`
+- **Proposed provenance header:** `// port-lint: source lib.rs` (current: `// port-lint: source lib.rs`)
+- **Proposed provenance header:** `// port-lint: source lib.rs` (current: `// port-lint: source lib.rs`)
+- **Proposed provenance header:** `// port-lint: source lib.rs` (current: `// port-lint: source lib.rs`)
+- **Lint issues:** 3
 
 ## Success Criteria
 
