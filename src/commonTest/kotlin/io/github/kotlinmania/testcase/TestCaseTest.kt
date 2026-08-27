@@ -257,21 +257,17 @@ public class TestCaseTest {
 
     private fun getSnapshotDirectory(): String = "snapshots/rust-stable"
 
-    private fun sanitizeLines(s: String): String {
-        return s.split('\n')
+    private fun sanitizeLines(s: String): String =
+        s
+            .split('\n')
             .filter { line ->
                 (line.startsWith("test") || line.contains("panicked at") || line.startsWith("error:") || line.startsWith("error[")) &&
                     !line.contains("process didn't exit successfully")
-            }
-            .map { line ->
+            }.map { line ->
                 val sb = StringBuilder()
                 for (c in line) {
                     if (c == '\\') sb.append('/') else sb.append(c)
                 }
                 sb.toString()
-            }
-            .joinToString("\n")
-    }
+            }.joinToString("\n")
 }
-
-
