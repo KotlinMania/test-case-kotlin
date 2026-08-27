@@ -4,12 +4,12 @@ Based on AST analysis, here are the concrete next steps.
 
 ## Summary
 
-- **Files Present:** 1/1 (100.0%)
-- **Function parity:** 0/0 matched (target 6) — N/A
+- **Files Present:** 1/2 (50.0%)
+- **Function parity:** 0/20 matched (target 6) — 0.0%
 - **Class/type parity:** 0/0 matched (target 1) — N/A
-- **Combined symbol parity:** 0/0 matched (target 7) — N/A
-- **Average inline-code cosine:** 0.00 (function body across 1 matched files)
-- **Average documentation cosine:** 0.29 (doc text across 1 matched files)
+- **Combined symbol parity:** 0/20 matched (target 7) — 0.0%
+- **Average inline-code cosine:** 0.00 (function body across 0 matched files)
+- **Average documentation cosine:** 0.00 (doc text across 0 matched files)
 - **Cheat-zeroed Files:** 1
 - **Critical Issues:** 1 files with <0.60 function similarity
 
@@ -27,9 +27,9 @@ No missing high-value files detected.
 
 Every matched file is listed below with function and type symbol parity.
 
-### 1. lib
+### 1. test-case.lib
 
-- **Target:** `testcase.Case [ZERO]`
+- **Target:** `testcase.Case [STUB]`
 - **Similarity:** 0.00
 - **Dependents:** 0
 - **Priority Score:** 10.0

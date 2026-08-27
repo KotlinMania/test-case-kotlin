@@ -1,4 +1,4 @@
-// port-lint: tests tests/acceptance_tests.rs
+// port-lint: tests test-case/tests/acceptance_tests.rs
 package io.github.kotlinmania.testcase
 
 import kotlin.math.abs
