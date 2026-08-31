@@ -35,5 +35,6 @@ public fun <A> testCase(
     name: String? = null,
     ignored: Boolean = false,
     expectedPanic: String? = null,
-): TestCase<A> =
-    TestCase(arguments, name, ignored, expectedPanic)
+): TestCase<A> {
+    return TestCase(arguments, name, ignored, expectedPanic)
+}
