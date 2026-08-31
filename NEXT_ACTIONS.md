@@ -4,10 +4,10 @@ Based on AST analysis, here are the concrete next steps.
 
 ## Summary
 
-- **Files Present:** 1/2 (50.0%)
-- **Function parity:** 0/20 matched — 0.0%
+- **Files Present:** 1/1 (100.0%)
+- **Function parity:** 0/0 matched — N/A
 - **Class/type parity:** 0/0 matched — N/A
-- **Combined symbol parity:** 0/20 matched — 0.0%
+- **Combined symbol parity:** 0/0 matched — N/A
 - **Average inline-code cosine:** 0.00 (function body across 0 matched files)
 - **Average documentation cosine:** 0.00 (doc text across 0 matched files)
 - **Cheat-zeroed Files:** 0
@@ -47,5 +47,5 @@ do not treat them as the next implementation target by default.
 
 | Source | Target | Path |
 |--------|--------|------|
-| `test-case.lib` | `testcase.Case` | `test-case/src/lib` |
+| `lib` | `testcase.Case` | `lib` |
 
