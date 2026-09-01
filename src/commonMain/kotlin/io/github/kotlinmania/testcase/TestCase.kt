@@ -1,4 +1,4 @@
-// port-lint: source test-case/src/lib.rs
+// port-lint: source lib.rs
 package io.github.kotlinmania.testcase
 
 /**

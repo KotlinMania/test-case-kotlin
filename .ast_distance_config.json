@@ -2,7 +2,7 @@
   "type": "port",
   "name": "test-case-kotlin",
   "source": {
-    "path": "tmp",
+    "path": "tmp/test-case/src",
     "lang": "rust"
   },
   "target": {
